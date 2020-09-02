@@ -100,13 +100,6 @@ class Perfil(db.Model):
 
     def __init__(self, donante_id):
         self.donante_id = donante_id
-        self.hepatitis = None
-        self.VIH = None
-        self.telefono = ""
-        self.fecha_nacimiento = None
-        self.email = ""
-        self.RH_positivo = None
-        self.sangre_tipo = ""
 
     @classmethod
     def crear(cls, donante_cedula):
@@ -121,17 +114,22 @@ class Perfil(db.Model):
         return True
 
 # clase para una visita de un donante
-class Visita:
+class Visita(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fecha_hora = db.Column(db.DateTime(timezone=True), nullable=False)
+    encuestador = db.Column(db.String(100), nullable=False)
+    genero = db.Column(db.String(30))
+    orientacion_sexual = db.Column(db.String(30))
+    ultimo_consumo_psicotropicas = db.Column(db.DateTime(timezone=True))
+    ultimo_periodo_menstrual = db.Column(db.DateTime(timezone=True))
+    ultimo_tatuaje = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self, donante_cedula, fecha_hora): 
-        self.fecha_hora = fecha_hora
-        self.donante_cedula = donante_cedula
-        self.genero = ""
-        self.orientacion_sexual = ""
-        self.ultimo_consumo_psicotropicas = None
-        self.ultimo_periodo_menstrual = None
-        self.encuestador = ""
-        self.ultimo_tatuaje = None
+    donante_id = db.Column(db.Integer, db.ForeignKey("donante.id"), nullable=False)
+
+    def __init__(self, donante_id, encuestador): 
+        self.fecha_hora = datetime.now(timezone.utc)
+        self.donante_id = donante_id
+        self.encuestador = encuestador
         
     @classmethod
     def crear(cls, donante_cedula, fecha_hora):
@@ -156,14 +154,16 @@ class Visita:
         pass
 
 # clase para una Muestra de la sangre donada por un Donante en una Visita
-class Muestra:
+class Muestra(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fecha_hora = db.Column(db.DateTime(timezone=True))
+    tiene_enfermedad = db.Column(db.Boolean(), default=False)
+    bioanalista = db.Column(db.String(30))
 
-    def __init__(self, visita_fecha_hora, donante_cedula):
-        self.visita_fecha_hora = visita_fecha_hora
-        self.donante_cedula = donante_cedula
-        self.fecha_hora = None
-        self.tiene_enfermedad = None
-        self.bioanalista = ""
+    visita_id = db.Column(db.Integer, db.ForeignKey("visita.id"), nullable=False)
+
+    def __init__(self, visita_id):
+        self.visita_id = visita_id
 
     @classmethod    
     def crear(cls, visita_fecha_hora, donante_cedula):
