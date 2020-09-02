@@ -6,9 +6,5 @@ diagram.png
 public/*
 dist/*
 package.json
-/migration
-./migrations
-migrations/
-migrations
 
 __pycache__/
