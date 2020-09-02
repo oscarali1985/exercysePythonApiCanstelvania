@@ -79,11 +79,23 @@ class Donante(db.Model):
     def serializar(self):
         """ devuelve un diccionario con data del objeto """
         return {
+            "id": self.id,
             "cedula": self.cedula,
             "nombre": self.nombre,
             "apellido": self.apellido,
             "nombre_completo": self.nombre_completo
         }
+
+    def actualizar_donante(self, diccionario):
+        """ actualiza propiedades del donante según el contenido del diccionario """
+        if "nombre" in diccionario:
+            self.nombre = diccionario["nombre"]
+        if "apellido" in diccionario:
+            self.apellido = diccionario["apellido"]
+        # for (key, value) in diccionario.items():
+        #     if hasattr(self, key) and key != "cedula":
+        #         self[key] = value
+        return True
 
 # clase para el perfil de un donante
 class Perfil(db.Model):
